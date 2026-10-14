@@ -1,0 +1,13 @@
+services:
+  cineradar:
+    build: .
+    image: cineradar:latest
+    container_name: cineradar
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "${CINERADAR_PORT:-7575}:7575"
+    volumes:
+      # Banco (lista, releases, sessões). No servidor: /srv/bzendron/dockerapp/cineradar/data
+      - ${CINERADAR_DATA_PATH:-./data}:/data
+    mem_limit: 512m
