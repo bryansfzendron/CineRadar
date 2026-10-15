@@ -69,6 +69,11 @@ export async function requestText(url: string, opts: RequestOptions): Promise<{ 
   return { text: await res.text(), headers: res.headers };
 }
 
+export async function requestBuffer(url: string, opts: RequestOptions): Promise<{ data: Buffer; contentType: string }> {
+  const res = await send(url, { ...opts, headers: { Accept: 'image/*,*/*', ...opts.headers } });
+  return { data: Buffer.from(await res.arrayBuffer()), contentType: res.headers.get('content-type') ?? 'application/octet-stream' };
+}
+
 export function errorMessage(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
 }

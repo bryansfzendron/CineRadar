@@ -68,7 +68,7 @@ export class Tmdb {
     await this.get('/configuration');
   }
 
-  private toResult(r: TmdbListItem, kind: Kind): Omit<DiscoverResult, 'inList'> {
+  private toResult(r: TmdbListItem, kind: Kind): Omit<DiscoverResult, 'inList' | 'inLibrary'> {
     return {
       kind,
       tmdbId: r.id,
@@ -82,7 +82,7 @@ export class Tmdb {
     };
   }
 
-  async search(query: string, kind?: Kind): Promise<Omit<DiscoverResult, 'inList'>[]> {
+  async search(query: string, kind?: Kind): Promise<Omit<DiscoverResult, 'inList' | 'inLibrary'>[]> {
     if (kind) {
       const data = await this.get<{ results: TmdbListItem[] }>(kind === 'movie' ? '/search/movie' : '/search/tv', {
         query,
@@ -97,7 +97,7 @@ export class Tmdb {
       .map((r) => this.toResult(r, r.media_type === 'movie' ? 'movie' : 'series'));
   }
 
-  async list(kind: Kind, which: 'trending' | 'now_playing' | 'popular' | 'upcoming' | 'on_the_air'): Promise<Omit<DiscoverResult, 'inList'>[]> {
+  async list(kind: Kind, which: 'trending' | 'now_playing' | 'popular' | 'upcoming' | 'on_the_air'): Promise<Omit<DiscoverResult, 'inList' | 'inLibrary'>[]> {
     const t = kind === 'movie' ? 'movie' : 'tv';
     const path = which === 'trending' ? `/trending/${t}/week` : `/${t}/${which}`;
     const data = await this.get<{ results: TmdbListItem[] }>(path, { region: this.region });

@@ -1,10 +1,11 @@
 // Jellyfin: mapa tmdbId -> item (para "Disponível" e "Abrir no Jellyfin") e atualização da biblioteca.
 
-import { requestJson } from './http.ts';
+import { requestBuffer, requestJson } from './http.ts';
 
 export interface JellyfinEntry {
   id: string;
   name: string;
+  year: number | null;
 }
 
 export class Jellyfin {
@@ -37,16 +38,27 @@ export class Jellyfin {
 
   async library(): Promise<Map<string, JellyfinEntry>> {
     if (!this.serverId) await this.version();
-    const data = await this.req<{ Items: { Id: string; Name: string; Type: string; ProviderIds?: Record<string, string> }[] }>('/Items', {
+    const data = await this.req<{
+      Items: { Id: string; Name: string; Type: string; ProductionYear?: number; ProviderIds?: Record<string, string> }[];
+    }>('/Items', {
       query: { Recursive: true, IncludeItemTypes: 'Movie,Series', Fields: 'ProviderIds' },
     });
     const map = new Map<string, JellyfinEntry>();
     for (const item of data.Items) {
       const tmdb = item.ProviderIds?.Tmdb;
       if (!tmdb) continue;
-      map.set(`${item.Type === 'Movie' ? 'movie' : 'series'}:${tmdb}`, { id: item.Id, name: item.Name });
+      map.set(`${item.Type === 'Movie' ? 'movie' : 'series'}:${tmdb}`, { id: item.Id, name: item.Name, year: item.ProductionYear ?? null });
     }
     return map;
+  }
+
+  poster(id: string): Promise<{ data: Buffer; contentType: string }> {
+    return requestBuffer(`${this.url}/Items/${encodeURIComponent(id)}/Images/Primary`, {
+      service: 'Jellyfin',
+      headers: { 'X-Emby-Token': this.key },
+      query: { maxWidth: 342, quality: 80 },
+      timeoutMs: 30_000,
+    });
   }
 
   linkFor(id: string): string {

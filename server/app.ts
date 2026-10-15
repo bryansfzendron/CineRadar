@@ -9,9 +9,10 @@ import rateLimit from '@fastify/rate-limit';
 import fastifyStatic from '@fastify/static';
 import Fastify, { type FastifyReply, type FastifyRequest } from 'fastify';
 import { z } from 'zod';
-import type { DiscoverResult, Health, IntegrationName, IntegrationStatus, Kind } from '../shared/types.ts';
+import type { DiscoverResult, Health, IntegrationName, IntegrationStatus, Kind, LibraryEntry } from '../shared/types.ts';
 import { Auth, SESSION_COOKIE } from './auth.ts';
 import { dispatchRelease } from './engine/dispatch.ts';
+import { OwnedLibrary } from './engine/library.ts';
 import { refreshLibraries, syncAvailability } from './engine/sync.ts';
 import { errorMessage } from './integrations/http.ts';
 import { SITES } from './integrations/sites/index.ts';
@@ -42,6 +43,7 @@ export async function buildApp(svc: Services, scheduler: Scheduler, auth: Auth) 
   await app.register(cookie);
   await app.register(rateLimit, { global: false });
   app.decorateRequest('user', null);
+  const owned = new OwnedLibrary(svc);
 
   // ---------- segurança ----------
   app.addHook('onRequest', async (req, reply) => {
@@ -219,10 +221,49 @@ export async function buildApp(svc: Services, scheduler: Scheduler, auth: Auth) 
   app.get('/api/events', async () => svc.store.recentEvents(40));
 
   // ---------- descobrir (TMDB) ----------
-  function withInList(results: Omit<DiscoverResult, 'inList'>[]): DiscoverResult[] {
+  async function withInList(results: Omit<DiscoverResult, 'inList' | 'inLibrary'>[]): Promise<DiscoverResult[]> {
     const map = svc.store.inListMap();
-    return results.map((r) => ({ ...r, inList: map.get(`${r.kind}:${r.tmdbId}`) ?? null }));
+    const have = owned.configured ? await owned.all().catch(() => null) : null;
+    return results.map((r) => {
+      const key = `${r.kind}:${r.tmdbId}`;
+      const t = have?.get(key);
+      return { ...r, inList: map.get(key) ?? null, inLibrary: t ? owned.links(t) : null };
+    });
   }
+
+  // ---------- biblioteca (o que já existe no Plex/Jellyfin) ----------
+  app.get('/api/library', async (req, reply) => {
+    const { kind } = z.object({ kind: kindSchema.optional() }).parse(req.query);
+    if (!owned.configured) return reply.code(400).send({ error: 'configure o Plex ou o Jellyfin' });
+    const have = await owned.all();
+    const inList = svc.store.inListMap();
+    const out: LibraryEntry[] = [];
+    for (const t of have.values()) {
+      if (kind && t.kind !== kind) continue;
+      const src = t.plexKey ? `plex/${t.plexKey}` : t.jellyfinId ? `jellyfin/${t.jellyfinId}` : null;
+      out.push({
+        kind: t.kind,
+        tmdbId: t.tmdbId,
+        title: t.title,
+        year: t.year,
+        posterPath: src ? `/api/library/poster/${src}` : null,
+        ...owned.links(t),
+        inList: inList.get(`${t.kind}:${t.tmdbId}`) ?? null,
+      });
+    }
+    return out.sort((a, b) => a.title.localeCompare(b.title, 'pt-BR', { sensitivity: 'base' }));
+  });
+
+  // Cartaz vindo do Plex/Jellyfin, repassado pelo servidor para o navegador não precisar de token.
+  app.get('/api/library/poster/:src/:id', async (req, reply) => {
+    const { src, id } = z.object({ src: z.enum(['plex', 'jellyfin']), id: z.string().regex(/^[\w-]{1,64}$/) }).parse(req.params);
+    try {
+      const img = await (src === 'plex' ? svc.plex.poster(id) : svc.jellyfin.poster(id));
+      return reply.header('Cache-Control', 'private, max-age=86400').type(img.contentType).send(img.data);
+    } catch {
+      return reply.code(404).send({ error: 'sem cartaz' });
+    }
+  });
 
   app.get('/api/discover/search', async (req, reply) => {
     const { q, kind } = z.object({ q: z.string().trim().min(1).max(120), kind: kindSchema.optional() }).parse(req.query);
@@ -286,7 +327,12 @@ export async function buildApp(svc: Services, scheduler: Scheduler, auth: Auth) 
       source === 'radarr' ? i.tmdbId === body.movie?.tmdbId : (body.series?.tmdbId && i.tmdbId === body.series.tmdbId) || (body.series?.tvdbId && i.tvdbId === body.series.tvdbId),
     );
     if (event === 'Download') {
-      void refreshLibraries(svc).then(() => setTimeout(() => void syncAvailability(svc), 60_000));
+      void refreshLibraries(svc).then(() =>
+        setTimeout(() => {
+          owned.invalidate();
+          void syncAvailability(svc);
+        }, 60_000),
+      );
     }
     if (!item) return { ok: true, matched: false };
     if (event === 'Grab') {

@@ -451,6 +451,25 @@ select {
   font-weight: 500;
 }
 
+.want-done.own {
+  flex-wrap: wrap;
+  gap: 4px 6px;
+}
+.open-links {
+  display: inline-flex;
+  gap: 8px;
+}
+.open-links a {
+  color: var(--luz);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.more {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0 8px;
+}
+
 /* ---------- vazio e carregando ---------- */
 
 .empty {

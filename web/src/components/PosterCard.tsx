@@ -14,6 +14,25 @@ export interface PosterData {
   language?: ReleaseLanguage | null;
 }
 
+/** Links "Plex" / "Jellyfin" para abrir um título que já está na biblioteca. */
+export function OpenLinks({ plexUrl, jellyfinUrl }: { plexUrl: string | null; jellyfinUrl: string | null }) {
+  if (!plexUrl && !jellyfinUrl) return null;
+  return (
+    <span className="open-links">
+      {plexUrl && (
+        <a href={plexUrl} target="_blank" rel="noreferrer">
+          Plex
+        </a>
+      )}
+      {jellyfinUrl && (
+        <a href={jellyfinUrl} target="_blank" rel="noreferrer">
+          Jellyfin
+        </a>
+      )}
+    </span>
+  );
+}
+
 export function Poster({ data, onOpen, action }: { data: PosterData; onOpen?: () => void; action?: React.ReactNode }) {
   const src = posterUrl(data.posterPath);
   const status = data.status ?? null;

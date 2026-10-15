@@ -6,6 +6,7 @@ import { Marquee } from './components/Marquee.tsx';
 import { Discover } from './pages/Discover.tsx';
 import { Library } from './pages/Library.tsx';
 import { Login } from './pages/Login.tsx';
+import { Owned } from './pages/Owned.tsx';
 import { SettingsPage } from './pages/Settings.tsx';
 
 export function App() {
@@ -45,6 +46,7 @@ function Shell({ username }: { username: string }) {
           <NavLink to="/filmes">Filmes</NavLink>
           <NavLink to="/series">Séries</NavLink>
           <NavLink to="/buscar">Buscar</NavLink>
+          <NavLink to="/biblioteca">Biblioteca</NavLink>
           <NavLink to="/ajustes">Ajustes</NavLink>
           <span className="nav-spacer" />
           <button type="button" className="nav-user" onClick={logout} title={`Sair (${username})`}>
@@ -59,6 +61,7 @@ function Shell({ username }: { username: string }) {
           <Route path="/filmes" element={<Library kind="movie" items={items.data} loading={items.isPending} />} />
           <Route path="/series" element={<Library kind="series" items={items.data} loading={items.isPending} />} />
           <Route path="/buscar" element={<Discover />} />
+          <Route path="/biblioteca" element={<Owned />} />
           <Route path="/ajustes" element={<SettingsPage />} />
           <Route path="*" element={<Navigate to="/filmes" replace />} />
         </Routes>

@@ -119,6 +119,21 @@ export interface DiscoverResult {
   rating: number | null;
   /** Já está na lista? Qual o id e o status. */
   inList: { id: number; status: ItemStatus } | null;
+  /** Já está no Plex ou no Jellyfin? Com os links para abrir. */
+  inLibrary: { plexUrl: string | null; jellyfinUrl: string | null } | null;
+}
+
+/** Título que já existe no Plex ou no Jellyfin (aba Biblioteca). */
+export interface LibraryEntry {
+  kind: Kind;
+  tmdbId: number;
+  title: string;
+  year: number | null;
+  /** Caminho do cartaz servido pelo próprio CineRadar. */
+  posterPath: string | null;
+  plexUrl: string | null;
+  jellyfinUrl: string | null;
+  inList: { id: number; status: ItemStatus } | null;
 }
 
 export interface AutoRule {

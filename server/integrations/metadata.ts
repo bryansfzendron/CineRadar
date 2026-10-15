@@ -14,7 +14,7 @@ export function imagePath(lookup: ArrLookup, type: 'poster' | 'fanart'): string 
   return m?.[1] ?? url;
 }
 
-function fromLookup(l: ArrLookup, kind: Kind): Omit<DiscoverResult, 'inList'> | null {
+function fromLookup(l: ArrLookup, kind: Kind): Omit<DiscoverResult, 'inList' | 'inLibrary'> | null {
   if (!l.tmdbId) return null;
   return {
     kind,
@@ -44,9 +44,9 @@ export class Metadata {
     return this.tmdb.configured;
   }
 
-  async search(query: string, kind?: Kind): Promise<Omit<DiscoverResult, 'inList'>[]> {
+  async search(query: string, kind?: Kind): Promise<Omit<DiscoverResult, 'inList' | 'inLibrary'>[]> {
     if (this.tmdb.configured) return this.tmdb.search(query, kind);
-    const out: Omit<DiscoverResult, 'inList'>[] = [];
+    const out: Omit<DiscoverResult, 'inList' | 'inLibrary'>[] = [];
     const jobs: Promise<void>[] = [];
     if ((!kind || kind === 'movie') && this.radarr.configured) {
       jobs.push(this.radarr.lookup(query).then((list) => void out.push(...list.map((l) => fromLookup(l, 'movie')).filter((x) => x !== null))));

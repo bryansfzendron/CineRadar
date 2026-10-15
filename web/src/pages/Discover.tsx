@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { DiscoverResult, Kind } from '../../../shared/types.ts';
 import { api, ApiError } from '../api.ts';
-import { Poster } from '../components/PosterCard.tsx';
+import { OpenLinks, Poster } from '../components/PosterCard.tsx';
 import { STATUS_LABEL } from '../labels.ts';
 
 function useDebounced<T>(value: T, ms: number): T {
@@ -128,6 +128,11 @@ function ResultCard({ r }: { r: DiscoverResult }) {
         inList ? (
           <span className="want want-done">
             <Check size={14} aria-hidden /> {STATUS_LABEL[inList.status]}
+          </span>
+        ) : r.inLibrary ? (
+          <span className="want want-done own">
+            <Check size={14} aria-hidden /> Na biblioteca
+            <OpenLinks plexUrl={r.inLibrary.plexUrl} jellyfinUrl={r.inLibrary.jellyfinUrl} />
           </span>
         ) : (
           <button type="button" className="want" onClick={() => add.mutate()} disabled={add.isPending}>

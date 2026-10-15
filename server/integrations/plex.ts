@@ -1,7 +1,7 @@
 // Plex: mapa tmdbId -> item da biblioteca (para "Disponível" e "Abrir no Plex") e atualização de bibliotecas.
 
 import type { Kind } from '../../shared/types.ts';
-import { requestJson } from './http.ts';
+import { requestBuffer, requestJson } from './http.ts';
 
 interface Section {
   key: string;
@@ -12,6 +12,7 @@ interface Section {
 export interface PlexEntry {
   ratingKey: string;
   title: string;
+  year: number | null;
 }
 
 export class Plex {
@@ -55,14 +56,24 @@ export class Plex {
       if (section.type !== 'movie' && section.type !== 'show') continue;
       const kind: Kind = section.type === 'movie' ? 'movie' : 'series';
       const data = await this.req<{
-        MediaContainer: { Metadata?: { ratingKey: string; title: string; Guid?: { id: string }[] }[] };
+        MediaContainer: { Metadata?: { ratingKey: string; title: string; year?: number; Guid?: { id: string }[] }[] };
       }>(`/library/sections/${section.key}/all`, { includeGuids: 1 });
       for (const m of data.MediaContainer.Metadata ?? []) {
         const tmdb = m.Guid?.find((g) => g.id.startsWith('tmdb://'))?.id.slice(7);
-        if (tmdb) map.set(`${kind}:${tmdb}`, { ratingKey: m.ratingKey, title: m.title });
+        if (tmdb) map.set(`${kind}:${tmdb}`, { ratingKey: m.ratingKey, title: m.title, year: m.year ?? null });
       }
     }
     return map;
+  }
+
+  /** Cartaz do item, já reduzido pelo próprio Plex. */
+  poster(ratingKey: string): Promise<{ data: Buffer; contentType: string }> {
+    return requestBuffer(`${this.url}/photo/:/transcode`, {
+      service: 'Plex',
+      headers: { 'X-Plex-Token': this.token },
+      query: { width: 342, height: 513, minSize: 1, url: `/library/metadata/${ratingKey}/thumb` },
+      timeoutMs: 30_000,
+    });
   }
 
   linkFor(ratingKey: string): string | null {

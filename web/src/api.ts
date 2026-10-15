@@ -1,6 +1,6 @@
 // Cliente da API. Erros viram ApiError com a mensagem do servidor; 401 manda para o login.
 
-import type { DiscoverResult, Health, Item, ItemDetail, Kind, Me, Settings } from '../../shared/types.ts';
+import type { DiscoverResult, Health, Item, ItemDetail, Kind, LibraryEntry, Me, Settings } from '../../shared/types.ts';
 
 export class ApiError extends Error {
   constructor(
@@ -61,6 +61,8 @@ export const api = {
     call<DiscoverResult[]>(`/api/discover/search?q=${encodeURIComponent(q)}${kind ? `&kind=${kind}` : ''}`),
   discoverList: (which: string, kind: Kind) => call<DiscoverResult[]>(`/api/discover/list/${which}?kind=${kind}`),
 
+  library: (kind: Kind) => call<LibraryEntry[]>(`/api/library?kind=${kind}`),
+
   settings: () => call<{ settings: Settings; webhooks: { radarr: string; sonarr: string } | null }>('/api/settings'),
   saveSettings: (s: Settings) => call<{ settings: Settings }>('/api/settings', { method: 'PUT', body: json(s) }),
   indexers: () => call<IndexerInfo[]>('/api/indexers'),
@@ -69,7 +71,7 @@ export const api = {
 /** Caminho do TMDB ("/abc.jpg") ou URL completa (cartazes que vêm do TheTVDB pelo Sonarr). */
 export function posterUrl(path: string | null, size: 'w185' | 'w342' | 'w500' = 'w342'): string | null {
   if (!path) return null;
-  return path.startsWith('http') ? path : `https://image.tmdb.org/t/p/${size}${path}`;
+  return path.startsWith('http') || path.startsWith('/api/') ? path : `https://image.tmdb.org/t/p/${size}${path}`;
 }
 
 export function backdropUrl(path: string | null): string | null {
