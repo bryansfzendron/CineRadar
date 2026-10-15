@@ -76,8 +76,24 @@ export class QBittorrent {
   }
 }
 
-/** Hash (btih) de um magnet, em minúsculas. */
+/** Hash (btih) de um magnet em hexadecimal minúsculo, como o qBittorrent mostra. Aceita o formato base32. */
 export function magnetHash(magnet: string | null | undefined): string | null {
-  const m = /xt=urn:btih:([a-z0-9]{32,40})/i.exec(magnet ?? '');
-  return m?.[1]?.toLowerCase() ?? null;
+  const m = /xt=urn:btih:([a-z0-9]{32,40})(?![a-z0-9])/i.exec(magnet ?? '');
+  if (!m) return null;
+  const raw = m[1]!;
+  if (raw.length === 40 && /^[0-9a-f]+$/i.test(raw)) return raw.toLowerCase();
+  return raw.length === 32 ? base32ToHex(raw) : null;
+}
+
+function base32ToHex(text: string): string | null {
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+  let bits = '';
+  for (const ch of text.toUpperCase()) {
+    const v = alphabet.indexOf(ch);
+    if (v < 0) return null;
+    bits += v.toString(2).padStart(5, '0');
+  }
+  let hex = '';
+  for (let i = 0; i + 4 <= bits.length; i += 4) hex += parseInt(bits.slice(i, i + 4), 2).toString(16);
+  return hex;
 }

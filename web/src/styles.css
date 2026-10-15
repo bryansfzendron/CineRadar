@@ -1165,6 +1165,14 @@ select {
   width: 100%;
 }
 
+.site-row {
+  grid-template-columns: 9rem 1fr auto;
+}
+
+.site-name {
+  font-weight: 600;
+}
+
 @media (max-width: 720px) {
   .torznab-row {
     grid-template-columns: 1fr;

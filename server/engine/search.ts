@@ -1,10 +1,11 @@
-// Motor de busca: pergunta a todas as fontes (Radarr/Sonarr, Prowlarr, Torznab), lê cada release,
+// Motor de busca: pergunta a todas as fontes (Radarr/Sonarr, Prowlarr, Torznab, sites BR), lê cada release,
 // descarta o que não é do título, dá nota e decide o que pode ir sozinho.
 
 import type { AutoRule, Kind, ReleaseSourceKind } from '../../shared/types.ts';
 import { rejectionText, type ArrRelease } from '../integrations/arr.ts';
 import { errorMessage } from '../integrations/http.ts';
 import { magnetHash } from '../integrations/qbittorrent.ts';
+import { SITES } from '../integrations/sites/index.ts';
 import { torznabSearch } from '../integrations/torznab.ts';
 import type { Services } from '../services.ts';
 import type { NewRelease, StoredItem } from '../store.ts';
@@ -33,6 +34,8 @@ interface RawRelease {
   arrSeason?: number | null;
   customFormatScore?: number | null;
   arrRejections?: string[];
+  /** Veio de um site brasileiro (o "dual" de lá inclui português). */
+  brSource?: boolean;
 }
 
 export interface SearchResult {
@@ -199,6 +202,44 @@ export async function searchItem(svc: Services, item: StoredItem): Promise<Searc
       });
     }
   }
+  // 3) Sites brasileiros lidos direto (sem Prowlarr).
+  for (const site of settings.sites.filter((s) => s.enabled)) {
+    const scraper = SITES[site.id];
+    sources.push(scraper.name);
+    tasks.push(async () => {
+      try {
+        const list = await scraper.search(site.url, {
+          kind: item.kind,
+          titles: [...new Set([item.title, item.originalTitle, ...item.altTitles])].filter(Boolean),
+          year: item.year,
+          seasons: item.seasons,
+          imdbId: item.imdbId,
+        });
+        for (const r of list) {
+          raw.push({
+            source: 'site',
+            sourceName: scraper.name,
+            indexer: scraper.name,
+            indexerId: null,
+            guid: r.infoHash ? `${scraper.id}:${r.infoHash}` : r.magnetUrl,
+            title: r.title,
+            size: r.size,
+            seeders: r.seeders,
+            leechers: r.leechers,
+            publishDate: null,
+            infoUrl: r.infoUrl,
+            downloadUrl: null,
+            magnetUrl: r.magnetUrl,
+            infoHash: r.infoHash,
+            matched: r.matched,
+            brSource: true,
+          });
+        }
+      } catch (err) {
+        errors.push(errorMessage(err));
+      }
+    });
+  }
   await pool(tasks, 2);
 
   return { releases: rank(item, raw, settings.autoRule), errors: [...new Set(errors)], sources };
@@ -229,7 +270,7 @@ export function rank(
     if (!r.matched && !matchesTitle(r.title, { titles, year: item.year, kind: item.kind })) continue;
     // Release com o título brasileiro ("Duna 2021 DUAL") é indício forte de que o "dual" inclui português.
     const localizedTitle = hasLocalTitle && matchesTitle(r.title, { titles: [item.title], year: item.year, kind: item.kind });
-    const parsed = parseRelease(r.title, r.arrLanguages, { localizedTitle });
+    const parsed = parseRelease(r.title, r.arrLanguages, { localizedTitle, brSource: r.brSource });
     if (item.kind === 'series' && r.arrSeason != null && parsed.season == null) parsed.season = r.arrSeason;
     if (item.kind === 'series' && parsed.season == null && !parsed.fullSeason) continue;
 
@@ -247,7 +288,8 @@ export function rank(
 
     const infoHash = (r.infoHash ?? magnetHash(r.magnetUrl))?.toLowerCase() ?? null;
     // O *arr nem sempre devolve o hash; título normalizado + tamanho junta o mesmo torrent de fontes diferentes.
-    const key = `${normalize(r.title)}|${Math.round(r.size / 5e7)}`;
+    // Sem tamanho (sites que não informam), o hash separa as versões.
+    const key = r.size > 0 ? `${normalize(r.title)}|${Math.round(r.size / 5e7)}` : `hash:${infoHash ?? normalize(r.title)}`;
     const candidate = {
       source: r.source,
       sourceName: r.sourceName,

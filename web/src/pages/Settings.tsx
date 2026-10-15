@@ -1,9 +1,9 @@
-// Ajustes: conexões, regra de envio automático, intervalo de busca, fontes extras e senha.
+// Ajustes: conexões, regra de envio automático, intervalo de busca, sites, fontes extras e senha.
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { RefreshCw } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import type { IntegrationName, Settings, TorznabSource } from '../../../shared/types.ts';
+import type { IntegrationName, Settings, SiteId, SiteSource, TorznabSource } from '../../../shared/types.ts';
 import { api } from '../api.ts';
 
 const NAMES: Record<IntegrationName, { label: string; role: string }> = {
@@ -14,7 +14,10 @@ const NAMES: Record<IntegrationName, { label: string; role: string }> = {
   plex: { label: 'Plex', role: 'mostra o que já está em cartaz' },
   jellyfin: { label: 'Jellyfin', role: 'mostra o que já está em cartaz' },
   qbittorrent: { label: 'qBittorrent', role: 'plano B quando o Radarr/Sonarr recusam uma versão' },
+  rede_torrent: { label: 'Rede Torrent', role: 'site brasileiro, lido direto' },
 };
+
+const SITE_NAMES: Record<SiteId, string> = { rede_torrent: 'Rede Torrent' };
 
 export function SettingsPage() {
   const qc = useQueryClient();
@@ -113,6 +116,13 @@ export function SettingsPage() {
             Aceitar 4K (arquivos grandes; o servidor não tem GPU para converter)
           </label>
 
+          <h3 className="section-title sub">Sites brasileiros</h3>
+          <p className="muted small">
+            O CineRadar abre a busca do site e as páginas dos títulos e pergunta os seeders aos trackers. Esses sites mudam de endereço com
+            frequência: se um parar de responder em Conexões, troque o endereço aqui.
+          </p>
+          <SitesEditor list={draft.sites} onChange={(sites) => setDraft({ ...draft, sites })} />
+
           <h3 className="section-title sub">Fontes extras (Torznab)</h3>
           <p className="muted small">Além do Prowlarr, o CineRadar pode consultar outros serviços compatíveis com Torznab, como o Jackett.</p>
           <TorznabEditor list={draft.torznab} onChange={(torznab) => setDraft({ ...draft, torznab })} />
@@ -181,6 +191,23 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
       {children}
       {hint && <span className="field-hint">{hint}</span>}
     </label>
+  );
+}
+
+function SitesEditor({ list, onChange }: { list: SiteSource[]; onChange: (l: SiteSource[]) => void }) {
+  const update = (id: SiteId, patch: Partial<SiteSource>) => onChange(list.map((s) => (s.id === id ? { ...s, ...patch } : s)));
+  return (
+    <div className="torznab">
+      {list.map((s) => (
+        <div key={s.id} className="torznab-row site-row">
+          <span className="site-name">{SITE_NAMES[s.id]}</span>
+          <input aria-label={`Endereço do ${SITE_NAMES[s.id]}`} value={s.url} onChange={(e) => update(s.id, { url: e.target.value })} />
+          <label className="check inline">
+            <input type="checkbox" checked={s.enabled} onChange={(e) => update(s.id, { enabled: e.target.checked })} /> Ligado
+          </label>
+        </div>
+      ))}
+    </div>
   );
 }
 

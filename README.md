@@ -7,7 +7,9 @@ Radarr/Sonarr para baixar, acompanhando até o título chegar ao Plex e ao Jelly
 - **Motor de busca em várias fontes:**
   - a busca interativa do Radarr/Sonarr;
   - o Prowlarr, com todos os indexadores que você cadastrar nele;
-  - fontes Torznab extras, como o Jackett.
+  - fontes Torznab extras, como o Jackett;
+  - sites brasileiros lidos direto (hoje o **Rede Torrent**): o CineRadar abre a busca e as páginas dos títulos, confere
+    pelo IMDb e pergunta os seeders aos trackers, já que o site não mostra.
 - **Leitura dos releases:** detecta dublado, dual áudio, legendado, resolução, origem (WEB-DL, BluRay, CAM…), codec e
   temporada. Dá uma nota de 0 a 100 e descarta releases de outro título.
 - **Envio automático com limite:** acima da nota mínima (e com seeders, tamanho e áudio em português), baixa sozinho;
@@ -20,7 +22,7 @@ Radarr/Sonarr para baixar, acompanhando até o título chegar ao Plex e ao Jelly
 ## Como funciona
 
 ```
-Quero ver ──► busca (Radarr/Sonarr + Prowlarr + Torznab) ──► lê idioma/qualidade ──► nota
+Quero ver ──► busca (Radarr/Sonarr + Prowlarr + Torznab + sites BR) ──► idioma/qualidade ──► nota
      │                                                                             │
      │                     nota ≥ limite e áudio PT ◄──────────────────────────────┤
      │                              │                                              │
@@ -53,7 +55,10 @@ Abra `http://<servidor>:7575` e entre com `CINERADAR_ADMIN_USER` / `CINERADAR_AD
    marque "Ao baixar" e "Ao importar" e cole o endereço.
 2. **Indexadores brasileiros no Prowlarr:** sem eles, quase tudo que aparece é em inglês. Os que você adicionar no
    Prowlarr entram no CineRadar sozinhos (Ajustes › Indexadores mostra quais estão funcionando).
-3. **Acesso de fora:** publique a porta 7575 por Tailscale ou por um hostname no Cloudflare Tunnel. O cookie de sessão
+3. **Sites brasileiros:** mudam de domínio com frequência. Em Ajustes › Sites brasileiros dá para trocar o endereço,
+   e em Conexões aparece se o site está respondendo. Para incluir outro site, crie um leitor em
+   `server/integrations/sites/` (um `SiteScraper`) e registre em `sites/index.ts`.
+4. **Acesso de fora:** publique a porta 7575 por Tailscale ou por um hostname no Cloudflare Tunnel. O cookie de sessão
    vira `Secure` automaticamente atrás de HTTPS.
 
 ## Desenvolvimento

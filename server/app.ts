@@ -14,6 +14,7 @@ import { Auth, SESSION_COOKIE } from './auth.ts';
 import { dispatchRelease } from './engine/dispatch.ts';
 import { refreshLibraries, syncAvailability } from './engine/sync.ts';
 import { errorMessage } from './integrations/http.ts';
+import { SITES } from './integrations/sites/index.ts';
 import type { Scheduler } from './scheduler.ts';
 import type { Services } from './services.ts';
 import { settingsSchema } from './settings.ts';
@@ -122,6 +123,11 @@ export async function buildApp(svc: Services, scheduler: Scheduler, auth: Auth) 
       ['plex', svc.plex.configured, () => svc.plex.version()],
       ['jellyfin', svc.jellyfin.configured, () => svc.jellyfin.version()],
       ['qbittorrent', svc.qbit.configured, () => svc.qbit.version()],
+      ...svc.settings.get().sites.map((site): [IntegrationName, boolean, () => Promise<string | null>] => [
+        site.id,
+        site.enabled,
+        async () => (await SITES[site.id].ping(site.url), new URL(site.url).host),
+      ]),
     ];
     const data = await Promise.all(
       checks.map(async ([name, configured, fn]): Promise<IntegrationStatus> => {

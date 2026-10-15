@@ -18,7 +18,7 @@ export type ItemStatus =
  */
 export type ReleaseLanguage = 'dual' | 'dublado' | 'ptbr' | 'multi' | 'legendado' | 'none';
 
-export type ReleaseSourceKind = 'prowlarr' | 'radarr' | 'sonarr' | 'torznab';
+export type ReleaseSourceKind = 'prowlarr' | 'radarr' | 'sonarr' | 'torznab' | 'site';
 
 export interface ParsedRelease {
   language: ReleaseLanguage;
@@ -139,13 +139,24 @@ export interface TorznabSource {
   enabled: boolean;
 }
 
+/** Site brasileiro lido direto pelo CineRadar (sem Prowlarr). */
+export type SiteId = 'rede_torrent';
+
+export interface SiteSource {
+  id: SiteId;
+  enabled: boolean;
+  /** Endereço atual do site: eles mudam de domínio com frequência. */
+  url: string;
+}
+
 export interface Settings {
   autoRule: AutoRule;
   searchIntervalHours: number;
   torznab: TorznabSource[];
+  sites: SiteSource[];
 }
 
-export type IntegrationName = 'tmdb' | 'radarr' | 'sonarr' | 'prowlarr' | 'plex' | 'jellyfin' | 'qbittorrent';
+export type IntegrationName = 'tmdb' | 'radarr' | 'sonarr' | 'prowlarr' | 'plex' | 'jellyfin' | 'qbittorrent' | SiteId;
 
 export interface IntegrationStatus {
   name: IntegrationName;

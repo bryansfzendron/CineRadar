@@ -28,6 +28,8 @@ const BR_GROUPS = /\b(wolverdon\w*|comando\w*|lapumia|bludv|piratefilmes|thepira
 export interface LanguageContext {
   /** O release usa o título em português (diferente do original), ex.: "Duna 2021" para "Dune". */
   localizedTitle?: boolean;
+  /** Veio de um site brasileiro: lá "dual" é sempre português + original. */
+  brSource?: boolean;
 }
 
 export function detectLanguage(title: string, arrLanguages: string[] = [], ctx: LanguageContext = {}): ReleaseLanguage {
@@ -37,7 +39,7 @@ export function detectLanguage(title: string, arrLanguages: string[] = [], ctx: 
   const arrOther = langs.length > 0 && !arrPortuguese && !langs.every((l) => l === 'english' || l === 'unknown');
 
   if (DUB.test(t)) return DUAL.test(t) ? 'dual' : 'dublado';
-  const brEvidence = PTBR.test(t) || BR_GROUPS.test(t) || ctx.localizedTitle === true || arrPortuguese;
+  const brEvidence = PTBR.test(t) || BR_GROUPS.test(t) || ctx.localizedTitle === true || ctx.brSource === true || arrPortuguese;
   if (DUAL.test(t)) {
     if (brEvidence && !LEG.test(t)) return 'dual';
     if (OTHER.test(t) || arrOther) return 'none';
@@ -50,6 +52,9 @@ export function detectLanguage(title: string, arrLanguages: string[] = [], ctx: 
 }
 
 export function detectResolution(t: string): ParsedRelease['resolution'] {
+  // A resolução escrita ("1080p") vale mais que um "4K" solto no nome ("Duna - 4K UHD ... 1080P").
+  const explicit = /\b(2160|1080|720|576|480)[pi]\b/.exec(t)?.[1];
+  if (explicit) return explicit === '2160' ? 2160 : explicit === '1080' ? 1080 : explicit === '720' ? 720 : 480;
   if (/\b(2160p|4k|uhd)\b/.test(t)) return 2160;
   if (/\b(1080p|1080i|fhd|full\s?hd)\b/.test(t)) return 1080;
   if (/\b(720p|hd)\b/.test(t)) return 720;

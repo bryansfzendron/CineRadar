@@ -1,9 +1,10 @@
-// Ajustes editáveis pela interface (regra automática, intervalo, fontes Torznab), guardados no banco.
+// Ajustes editáveis pela interface (regra automática, intervalo, fontes Torznab, sites), guardados no banco.
 
 import { z } from 'zod';
 import type { Settings } from '../shared/types.ts';
 import type { DB } from './db/index.ts';
 import { DEFAULT_AUTO_RULE } from './engine/score.ts';
+import { DEFAULT_SITES } from './integrations/sites/index.ts';
 
 export const settingsSchema = z.object({
   autoRule: z.object({
@@ -27,12 +28,20 @@ export const settingsSchema = z.object({
       }),
     )
     .max(20),
+  sites: z.array(
+    z.object({
+      id: z.enum(['rede_torrent']),
+      enabled: z.boolean(),
+      url: z.string().url().refine((u) => /^https?:\/\//.test(u), 'use http ou https'),
+    }),
+  ),
 });
 
 export const DEFAULT_SETTINGS: Settings = {
   autoRule: DEFAULT_AUTO_RULE,
   searchIntervalHours: 6,
   torznab: [],
+  sites: DEFAULT_SITES,
 };
 
 export class SettingsStore {
@@ -47,6 +56,8 @@ export class SettingsStore {
     if (row) {
       const merged = { ...DEFAULT_SETTINGS, ...JSON.parse(row.value) };
       merged.autoRule = { ...DEFAULT_SETTINGS.autoRule, ...merged.autoRule };
+      // Sites novos entram com o padrão; os já salvos mantêm o endereço e o liga/desliga.
+      merged.sites = DEFAULT_SITES.map((d) => ({ ...d, ...(merged.sites ?? []).find((x: { id: string }) => x.id === d.id) }));
       const result = settingsSchema.safeParse(merged);
       if (result.success) parsed = result.data;
     }
