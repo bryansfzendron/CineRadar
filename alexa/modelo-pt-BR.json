@@ -129,6 +129,326 @@
           ]
         },
         {
+          "name": "PedirTemporada1Intent",
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "a primeira temporada de {titulo}",
+            "a primeira temporada do {titulo}",
+            "a primeira temporada da {titulo}",
+            "pede a primeira temporada de {titulo}",
+            "pede a primeira temporada do {titulo}",
+            "pede a primeira temporada da {titulo}",
+            "pedir a primeira temporada de {titulo}",
+            "pedir a primeira temporada do {titulo}",
+            "pedir a primeira temporada da {titulo}",
+            "peça a primeira temporada de {titulo}",
+            "peça a primeira temporada do {titulo}",
+            "peça a primeira temporada da {titulo}",
+            "quero a primeira temporada de {titulo}",
+            "quero a primeira temporada do {titulo}",
+            "quero a primeira temporada da {titulo}",
+            "baixa a primeira temporada de {titulo}",
+            "baixa a primeira temporada do {titulo}",
+            "baixa a primeira temporada da {titulo}",
+            "baixar a primeira temporada de {titulo}",
+            "baixar a primeira temporada do {titulo}",
+            "baixar a primeira temporada da {titulo}"
+          ]
+        },
+        {
+          "name": "PedirTemporada2Intent",
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "a segunda temporada de {titulo}",
+            "a segunda temporada do {titulo}",
+            "a segunda temporada da {titulo}",
+            "pede a segunda temporada de {titulo}",
+            "pede a segunda temporada do {titulo}",
+            "pede a segunda temporada da {titulo}",
+            "pedir a segunda temporada de {titulo}",
+            "pedir a segunda temporada do {titulo}",
+            "pedir a segunda temporada da {titulo}",
+            "peça a segunda temporada de {titulo}",
+            "peça a segunda temporada do {titulo}",
+            "peça a segunda temporada da {titulo}",
+            "quero a segunda temporada de {titulo}",
+            "quero a segunda temporada do {titulo}",
+            "quero a segunda temporada da {titulo}",
+            "baixa a segunda temporada de {titulo}",
+            "baixa a segunda temporada do {titulo}",
+            "baixa a segunda temporada da {titulo}",
+            "baixar a segunda temporada de {titulo}",
+            "baixar a segunda temporada do {titulo}",
+            "baixar a segunda temporada da {titulo}"
+          ]
+        },
+        {
+          "name": "PedirTemporada3Intent",
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "a terceira temporada de {titulo}",
+            "a terceira temporada do {titulo}",
+            "a terceira temporada da {titulo}",
+            "pede a terceira temporada de {titulo}",
+            "pede a terceira temporada do {titulo}",
+            "pede a terceira temporada da {titulo}",
+            "pedir a terceira temporada de {titulo}",
+            "pedir a terceira temporada do {titulo}",
+            "pedir a terceira temporada da {titulo}",
+            "peça a terceira temporada de {titulo}",
+            "peça a terceira temporada do {titulo}",
+            "peça a terceira temporada da {titulo}",
+            "quero a terceira temporada de {titulo}",
+            "quero a terceira temporada do {titulo}",
+            "quero a terceira temporada da {titulo}",
+            "baixa a terceira temporada de {titulo}",
+            "baixa a terceira temporada do {titulo}",
+            "baixa a terceira temporada da {titulo}",
+            "baixar a terceira temporada de {titulo}",
+            "baixar a terceira temporada do {titulo}",
+            "baixar a terceira temporada da {titulo}"
+          ]
+        },
+        {
+          "name": "PedirTemporada4Intent",
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "a quarta temporada de {titulo}",
+            "a quarta temporada do {titulo}",
+            "a quarta temporada da {titulo}",
+            "pede a quarta temporada de {titulo}",
+            "pede a quarta temporada do {titulo}",
+            "pede a quarta temporada da {titulo}",
+            "pedir a quarta temporada de {titulo}",
+            "pedir a quarta temporada do {titulo}",
+            "pedir a quarta temporada da {titulo}",
+            "peça a quarta temporada de {titulo}",
+            "peça a quarta temporada do {titulo}",
+            "peça a quarta temporada da {titulo}",
+            "quero a quarta temporada de {titulo}",
+            "quero a quarta temporada do {titulo}",
+            "quero a quarta temporada da {titulo}",
+            "baixa a quarta temporada de {titulo}",
+            "baixa a quarta temporada do {titulo}",
+            "baixa a quarta temporada da {titulo}",
+            "baixar a quarta temporada de {titulo}",
+            "baixar a quarta temporada do {titulo}",
+            "baixar a quarta temporada da {titulo}"
+          ]
+        },
+        {
+          "name": "PedirTemporada5Intent",
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "a quinta temporada de {titulo}",
+            "a quinta temporada do {titulo}",
+            "a quinta temporada da {titulo}",
+            "pede a quinta temporada de {titulo}",
+            "pede a quinta temporada do {titulo}",
+            "pede a quinta temporada da {titulo}",
+            "pedir a quinta temporada de {titulo}",
+            "pedir a quinta temporada do {titulo}",
+            "pedir a quinta temporada da {titulo}",
+            "peça a quinta temporada de {titulo}",
+            "peça a quinta temporada do {titulo}",
+            "peça a quinta temporada da {titulo}",
+            "quero a quinta temporada de {titulo}",
+            "quero a quinta temporada do {titulo}",
+            "quero a quinta temporada da {titulo}",
+            "baixa a quinta temporada de {titulo}",
+            "baixa a quinta temporada do {titulo}",
+            "baixa a quinta temporada da {titulo}",
+            "baixar a quinta temporada de {titulo}",
+            "baixar a quinta temporada do {titulo}",
+            "baixar a quinta temporada da {titulo}"
+          ]
+        },
+        {
+          "name": "PedirTemporada6Intent",
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "a sexta temporada de {titulo}",
+            "a sexta temporada do {titulo}",
+            "a sexta temporada da {titulo}",
+            "pede a sexta temporada de {titulo}",
+            "pede a sexta temporada do {titulo}",
+            "pede a sexta temporada da {titulo}",
+            "pedir a sexta temporada de {titulo}",
+            "pedir a sexta temporada do {titulo}",
+            "pedir a sexta temporada da {titulo}",
+            "peça a sexta temporada de {titulo}",
+            "peça a sexta temporada do {titulo}",
+            "peça a sexta temporada da {titulo}",
+            "quero a sexta temporada de {titulo}",
+            "quero a sexta temporada do {titulo}",
+            "quero a sexta temporada da {titulo}",
+            "baixa a sexta temporada de {titulo}",
+            "baixa a sexta temporada do {titulo}",
+            "baixa a sexta temporada da {titulo}",
+            "baixar a sexta temporada de {titulo}",
+            "baixar a sexta temporada do {titulo}",
+            "baixar a sexta temporada da {titulo}"
+          ]
+        },
+        {
+          "name": "PedirTemporada7Intent",
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "a sétima temporada de {titulo}",
+            "a sétima temporada do {titulo}",
+            "a sétima temporada da {titulo}",
+            "pede a sétima temporada de {titulo}",
+            "pede a sétima temporada do {titulo}",
+            "pede a sétima temporada da {titulo}",
+            "pedir a sétima temporada de {titulo}",
+            "pedir a sétima temporada do {titulo}",
+            "pedir a sétima temporada da {titulo}",
+            "peça a sétima temporada de {titulo}",
+            "peça a sétima temporada do {titulo}",
+            "peça a sétima temporada da {titulo}",
+            "quero a sétima temporada de {titulo}",
+            "quero a sétima temporada do {titulo}",
+            "quero a sétima temporada da {titulo}",
+            "baixa a sétima temporada de {titulo}",
+            "baixa a sétima temporada do {titulo}",
+            "baixa a sétima temporada da {titulo}",
+            "baixar a sétima temporada de {titulo}",
+            "baixar a sétima temporada do {titulo}",
+            "baixar a sétima temporada da {titulo}"
+          ]
+        },
+        {
+          "name": "PedirTemporada8Intent",
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "a oitava temporada de {titulo}",
+            "a oitava temporada do {titulo}",
+            "a oitava temporada da {titulo}",
+            "pede a oitava temporada de {titulo}",
+            "pede a oitava temporada do {titulo}",
+            "pede a oitava temporada da {titulo}",
+            "pedir a oitava temporada de {titulo}",
+            "pedir a oitava temporada do {titulo}",
+            "pedir a oitava temporada da {titulo}",
+            "peça a oitava temporada de {titulo}",
+            "peça a oitava temporada do {titulo}",
+            "peça a oitava temporada da {titulo}",
+            "quero a oitava temporada de {titulo}",
+            "quero a oitava temporada do {titulo}",
+            "quero a oitava temporada da {titulo}",
+            "baixa a oitava temporada de {titulo}",
+            "baixa a oitava temporada do {titulo}",
+            "baixa a oitava temporada da {titulo}",
+            "baixar a oitava temporada de {titulo}",
+            "baixar a oitava temporada do {titulo}",
+            "baixar a oitava temporada da {titulo}"
+          ]
+        },
+        {
+          "name": "PedirTemporada9Intent",
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "a nona temporada de {titulo}",
+            "a nona temporada do {titulo}",
+            "a nona temporada da {titulo}",
+            "pede a nona temporada de {titulo}",
+            "pede a nona temporada do {titulo}",
+            "pede a nona temporada da {titulo}",
+            "pedir a nona temporada de {titulo}",
+            "pedir a nona temporada do {titulo}",
+            "pedir a nona temporada da {titulo}",
+            "peça a nona temporada de {titulo}",
+            "peça a nona temporada do {titulo}",
+            "peça a nona temporada da {titulo}",
+            "quero a nona temporada de {titulo}",
+            "quero a nona temporada do {titulo}",
+            "quero a nona temporada da {titulo}",
+            "baixa a nona temporada de {titulo}",
+            "baixa a nona temporada do {titulo}",
+            "baixa a nona temporada da {titulo}",
+            "baixar a nona temporada de {titulo}",
+            "baixar a nona temporada do {titulo}",
+            "baixar a nona temporada da {titulo}"
+          ]
+        },
+        {
+          "name": "PedirTemporada10Intent",
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "a décima temporada de {titulo}",
+            "a décima temporada do {titulo}",
+            "a décima temporada da {titulo}",
+            "pede a décima temporada de {titulo}",
+            "pede a décima temporada do {titulo}",
+            "pede a décima temporada da {titulo}",
+            "pedir a décima temporada de {titulo}",
+            "pedir a décima temporada do {titulo}",
+            "pedir a décima temporada da {titulo}",
+            "peça a décima temporada de {titulo}",
+            "peça a décima temporada do {titulo}",
+            "peça a décima temporada da {titulo}",
+            "quero a décima temporada de {titulo}",
+            "quero a décima temporada do {titulo}",
+            "quero a décima temporada da {titulo}",
+            "baixa a décima temporada de {titulo}",
+            "baixa a décima temporada do {titulo}",
+            "baixa a décima temporada da {titulo}",
+            "baixar a décima temporada de {titulo}",
+            "baixar a décima temporada do {titulo}",
+            "baixar a décima temporada da {titulo}"
+          ]
+        },
+        {
           "name": "AprovarIntent",
           "slots": [
             {

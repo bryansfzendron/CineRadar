@@ -343,10 +343,10 @@ function offer(candidates: Candidate[], index: number, prefix: string, extra: Pi
   return speak(`${prefix} ${describe(c)}.`, { ask: 'Quer que eu peça?', state });
 }
 
-async function ask(env: AlexaRequestEnvelope, deps: SkillDeps, kind?: Kind, seasonOnly = false): Promise<AlexaResponse> {
+async function ask(env: AlexaRequestEnvelope, deps: SkillDeps, kind?: Kind, seasonOnly = false, season?: number): Promise<AlexaResponse> {
   const spoken = slot(env, 'titulo');
   if (!spoken) return speak('Qual filme ou série? Diga, por exemplo: pede o filme Duna.', { ask: 'O que você quer pedir?' });
-  const t = parseTitle(spoken, kind, seasonOnly);
+  const t = season != null ? { ...parseTitle(spoken, 'series'), kind: 'series' as Kind, season } : parseTitle(spoken, kind, seasonOnly);
   if (seasonOnly && t.season == null) return speak('Qual temporada? Diga, por exemplo: pede a temporada 2 de The Bear.');
   const found = (await deps.search(t.query, t.kind)).filter((c) => c.title).slice(0, MAX_CANDIDATES);
   if (!found.length) {
@@ -617,7 +617,13 @@ export async function handle(env: AlexaRequestEnvelope, deps: SkillDeps): Promis
   if (type === 'SessionEndedRequest') return { version: '1.0', response: {} };
   if (type !== 'IntentRequest') return speak('Não entendi o pedido.');
 
-  switch (env.request?.intent?.name) {
+  const name = env.request?.intent?.name ?? '';
+  // "a terceira temporada de {titulo}": o slot de busca livre não divide a frase com outro slot, então
+  // cada temporada (1 a 10) é uma intenção, e o número vem do nome dela.
+  const seasonIntent = /^PedirTemporada(\d{1,2})Intent$/.exec(name);
+  if (seasonIntent) return ask(env, deps, 'series', true, Number(seasonIntent[1]));
+
+  switch (name) {
     case 'PedirIntent':
       return ask(env, deps);
     case 'PedirFilmeIntent':

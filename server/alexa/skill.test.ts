@@ -268,6 +268,13 @@ describe('pedir temporada', () => {
     expect(calls).toEqual(['search the bear series', 'request series 136315 T2']);
   });
 
+  it('"pede a terceira temporada de the bear" pela intenção da temporada 3', async () => {
+    const { d, calls } = deps();
+    const r = await handle(intent('PedirTemporada3Intent', { titulo: 'the bear' }), d);
+    expect(text(r)).toBe('Achei a série O Urso, de 2022. Quer que eu peça a temporada 3?');
+    expect(calls).toEqual(['search the bear series']);
+  });
+
   it('sem número pergunta qual', async () => {
     const { d } = deps();
     expect(text(await handle(intent('PedirTemporadaIntent', { titulo: 'the bear' }), d))).toBe(
