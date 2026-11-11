@@ -1,0 +1,106 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "cine radar",
+      "intents": [
+        {
+          "name": "PedirFilmeIntent",
+          "slots": [{ "name": "titulo", "type": "AMAZON.SearchQuery" }],
+          "samples": [
+            "o filme {titulo}",
+            "pede o filme {titulo}",
+            "pedir o filme {titulo}",
+            "peça o filme {titulo}",
+            "quero o filme {titulo}",
+            "quero ver o filme {titulo}",
+            "baixa o filme {titulo}",
+            "baixar o filme {titulo}",
+            "adiciona o filme {titulo}",
+            "coloca o filme {titulo}"
+          ]
+        },
+        {
+          "name": "PedirSerieIntent",
+          "slots": [{ "name": "titulo", "type": "AMAZON.SearchQuery" }],
+          "samples": [
+            "a série {titulo}",
+            "pede a série {titulo}",
+            "pedir a série {titulo}",
+            "peça a série {titulo}",
+            "quero a série {titulo}",
+            "quero ver a série {titulo}",
+            "baixa a série {titulo}",
+            "baixar a série {titulo}",
+            "adiciona a série {titulo}",
+            "coloca a série {titulo}"
+          ]
+        },
+        {
+          "name": "PedirIntent",
+          "slots": [{ "name": "titulo", "type": "AMAZON.SearchQuery" }],
+          "samples": [
+            "pede {titulo}",
+            "pedir {titulo}",
+            "peça {titulo}",
+            "quero ver {titulo}",
+            "baixa {titulo}",
+            "baixar {titulo}",
+            "adiciona {titulo}",
+            "coloca {titulo} na lista",
+            "adiciona {titulo} na lista"
+          ]
+        },
+        {
+          "name": "StatusPedidoIntent",
+          "slots": [{ "name": "titulo", "type": "AMAZON.SearchQuery" }],
+          "samples": [
+            "como está o pedido de {titulo}",
+            "como está o pedido do {titulo}",
+            "como está o pedido da {titulo}",
+            "como anda o pedido de {titulo}",
+            "como está {titulo}",
+            "já chegou {titulo}",
+            "quanto falta para {titulo}",
+            "quanto falta pra chegar {titulo}",
+            "o status de {titulo}"
+          ]
+        },
+        {
+          "name": "PendentesIntent",
+          "slots": [],
+          "samples": [
+            "o que está baixando",
+            "o que tá baixando",
+            "o que está na fila",
+            "o que falta chegar",
+            "quais pedidos estão pendentes",
+            "como estão os pedidos",
+            "como estão meus pedidos",
+            "os pedidos"
+          ]
+        },
+        {
+          "name": "ChegouIntent",
+          "slots": [],
+          "samples": [
+            "o que chegou",
+            "o que chegou de novo",
+            "o que chegou essa semana",
+            "o que tem de novo",
+            "quais filmes chegaram",
+            "tem novidade",
+            "tem coisa nova"
+          ]
+        },
+        { "name": "AMAZON.YesIntent", "samples": [] },
+        { "name": "AMAZON.NoIntent", "samples": [] },
+        { "name": "AMAZON.HelpIntent", "samples": [] },
+        { "name": "AMAZON.CancelIntent", "samples": [] },
+        { "name": "AMAZON.StopIntent", "samples": [] },
+        { "name": "AMAZON.NavigateHomeIntent", "samples": [] },
+        { "name": "AMAZON.FallbackIntent", "samples": [] }
+      ],
+      "types": []
+    }
+  }
+}

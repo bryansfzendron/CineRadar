@@ -10,9 +10,11 @@ import fastifyStatic from '@fastify/static';
 import Fastify, { type FastifyReply, type FastifyRequest } from 'fastify';
 import { z } from 'zod';
 import type { DiscoverResult, Health, IntegrationName, IntegrationStatus, Kind, LibraryEntry } from '../shared/types.ts';
+import { registerAlexa } from './alexa/route.ts';
 import { Auth, SESSION_COOKIE } from './auth.ts';
 import { dispatchRelease } from './engine/dispatch.ts';
 import { OwnedLibrary } from './engine/library.ts';
+import { NoMetadataError, requestTitle } from './engine/request.ts';
 import { refreshLibraries, syncAvailability } from './engine/sync.ts';
 import { errorMessage } from './integrations/http.ts';
 import { SITES } from './integrations/sites/index.ts';
@@ -165,18 +167,13 @@ export async function buildApp(svc: Services, scheduler: Scheduler, auth: Auth) 
 
   app.post('/api/items', async (req, reply) => {
     const body = z.object({ kind: kindSchema, tmdbId: z.number().int().positive() }).parse(req.body);
-    const existing = svc.store.findByTmdb(body.kind, body.tmdbId);
-    if (existing) return reply.code(200).send(publicItem(existing));
-    if (!svc.meta.configured) return reply.code(400).send({ error: 'configure o TMDB ou o Radarr/Sonarr' });
-    const details = await svc.meta.details(body.kind, body.tmdbId);
-    const item = svc.store.addItem(details);
-    // Já pode estar no Plex/Jellyfin; confere e, se não estiver, busca.
-    void (async () => {
-      await syncAvailability(svc).catch(() => undefined);
-      const fresh = svc.store.getItem(item.id);
-      if (fresh && fresh.status !== 'available') await scheduler.search(fresh);
-    })();
-    return reply.code(201).send(publicItem(item));
+    try {
+      const { item, created } = await requestTitle(svc, scheduler, body.kind, body.tmdbId);
+      return reply.code(created ? 201 : 200).send(publicItem(item));
+    } catch (err) {
+      if (err instanceof NoMetadataError) return reply.code(400).send({ error: err.message });
+      throw err;
+    }
   });
 
   const idParam = z.object({ id: z.coerce.number().int().positive() });
@@ -344,6 +341,18 @@ export async function buildApp(svc: Services, scheduler: Scheduler, auth: Auth) 
     }
     return { ok: true, matched: true };
   });
+
+  // ---------- skill da Alexa (autenticada pela assinatura da Amazon, não pelo login) ----------
+  if (svc.config.alexa.skillId) {
+    await registerAlexa(app, {
+      svc,
+      search: async (q, kind) => {
+        if (!svc.meta.configured) throw new NoMetadataError();
+        return withInList(await svc.meta.search(q, kind));
+      },
+      request: async (kind, tmdbId) => ({ created: (await requestTitle(svc, scheduler, kind, tmdbId)).created }),
+    });
+  }
 
   // ---------- interface ----------
   const dir = webDir();

@@ -44,6 +44,17 @@ export const config = {
     webUrl: url('PLEX_WEB_URL', 'https://app.plex.tv/desktop'),
   },
   jellyfin: { url: url('JELLYFIN_URL'), key: env('JELLYFIN_API_KEY'), webUrl: url('JELLYFIN_WEB_URL') },
+  /**
+   * Skill da Alexa ("Alexa, pede pro cine radar o filme Duna"). Vazio desliga a rota /alexa. Os userIds
+   * (separados por vírgula) só são necessários se a skill sair do modo de desenvolvimento.
+   */
+  alexa: {
+    skillId: env('ALEXA_SKILL_ID'),
+    userIds: env('ALEXA_USER_IDS')
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean),
+  },
   qbittorrent: {
     url: url('QBITTORRENT_URL'),
     user: env('QBITTORRENT_USER'),

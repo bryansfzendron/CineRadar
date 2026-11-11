@@ -1,0 +1,42 @@
+{
+  "manifest": {
+    "manifestVersion": "1.0",
+    "publishingInformation": {
+      "locales": {
+        "pt-BR": {
+          "name": "CineRadar",
+          "summary": "Peça filmes e séries por voz para o CineRadar.",
+          "description": "Pede filmes e séries para a lista do CineRadar, que procura versões em português e entrega ao Radarr e ao Sonarr. Também conta como está um pedido, o que está baixando e o que chegou.",
+          "examplePhrases": [
+            "Alexa, pede pro cine radar o filme Duna",
+            "Alexa, pergunta pro cine radar o que está baixando",
+            "Alexa, pergunta pro cine radar o que chegou"
+          ],
+          "keywords": ["filmes", "séries", "plex"]
+        }
+      },
+      "isAvailableWorldwide": false,
+      "distributionCountries": ["BR"],
+      "testingInstructions": "Skill de uso pessoal, só em desenvolvimento.",
+      "category": "MOVIE_AND_TV_KNOWLEDGE_AND_TRIVIA"
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "uri": "https://cineradar.bryanzendron.com.br/alexa",
+          "sslCertificateType": "Wildcard"
+        }
+      }
+    },
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "usesPersonalInfo": false,
+      "isChildDirected": false,
+      "isExportCompliant": true,
+      "containsAds": false,
+      "locales": {
+        "pt-BR": {}
+      }
+    }
+  }
+}
