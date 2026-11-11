@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "cine radar",
+      "invocationName": "meu cinema",
       "intents": [
         {
           "name": "PedirFilmeIntent",

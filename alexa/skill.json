@@ -8,9 +8,9 @@
           "summary": "Peça filmes e séries por voz para o CineRadar.",
           "description": "Pede filmes e séries para a lista do CineRadar, que procura versões em português e entrega ao Radarr e ao Sonarr. Também conta como está um pedido, o que está baixando e o que chegou.",
           "examplePhrases": [
-            "Alexa, pede pro cine radar o filme Duna",
-            "Alexa, pergunta pro cine radar o que está baixando",
-            "Alexa, pergunta pro cine radar o que chegou"
+            "Alexa, pede pro meu cinema o filme Duna",
+            "Alexa, pergunta pro meu cinema o que está baixando",
+            "Alexa, pergunta pro meu cinema o que chegou"
           ],
           "keywords": ["filmes", "séries", "plex"]
         }
