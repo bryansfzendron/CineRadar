@@ -270,7 +270,7 @@ describe('pedir temporada', () => {
 
   it('"pede a terceira temporada de the bear" pela intenção da temporada 3', async () => {
     const { d, calls } = deps();
-    const r = await handle(intent('PedirTemporada3Intent', { titulo: 'the bear' }), d);
+    const r = await handle(intent('PedirTerceiraTemporadaIntent', { titulo: 'the bear' }), d);
     expect(text(r)).toBe('Achei a série O Urso, de 2022. Quer que eu peça a temporada 3?');
     expect(calls).toEqual(['search the bear series']);
   });

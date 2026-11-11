@@ -619,9 +619,13 @@ export async function handle(env: AlexaRequestEnvelope, deps: SkillDeps): Promis
 
   const name = env.request?.intent?.name ?? '';
   // "a terceira temporada de {titulo}": o slot de busca livre não divide a frase com outro slot, então
-  // cada temporada (1 a 10) é uma intenção, e o número vem do nome dela.
-  const seasonIntent = /^PedirTemporada(\d{1,2})Intent$/.exec(name);
-  if (seasonIntent) return ask(env, deps, 'series', true, Number(seasonIntent[1]));
+  // cada temporada (1 a 10) é uma intenção, e o número vem do nome dela (a Amazon não aceita dígitos
+  // no nome: PedirTerceiraTemporadaIntent).
+  const seasonIntent = /^Pedir([A-Z][a-z]+)TemporadaIntent$/.exec(name);
+  if (seasonIntent) {
+    const n = wordToNumber(seasonIntent[1]!);
+    if (n) return ask(env, deps, 'series', true, n);
+  }
 
   switch (name) {
     case 'PedirIntent':

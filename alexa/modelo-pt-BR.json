@@ -129,7 +129,7 @@
           ]
         },
         {
-          "name": "PedirTemporada1Intent",
+          "name": "PedirPrimeiraTemporadaIntent",
           "slots": [
             {
               "name": "titulo",
@@ -161,7 +161,7 @@
           ]
         },
         {
-          "name": "PedirTemporada2Intent",
+          "name": "PedirSegundaTemporadaIntent",
           "slots": [
             {
               "name": "titulo",
@@ -193,7 +193,7 @@
           ]
         },
         {
-          "name": "PedirTemporada3Intent",
+          "name": "PedirTerceiraTemporadaIntent",
           "slots": [
             {
               "name": "titulo",
@@ -225,7 +225,7 @@
           ]
         },
         {
-          "name": "PedirTemporada4Intent",
+          "name": "PedirQuartaTemporadaIntent",
           "slots": [
             {
               "name": "titulo",
@@ -257,7 +257,7 @@
           ]
         },
         {
-          "name": "PedirTemporada5Intent",
+          "name": "PedirQuintaTemporadaIntent",
           "slots": [
             {
               "name": "titulo",
@@ -289,7 +289,7 @@
           ]
         },
         {
-          "name": "PedirTemporada6Intent",
+          "name": "PedirSextaTemporadaIntent",
           "slots": [
             {
               "name": "titulo",
@@ -321,7 +321,7 @@
           ]
         },
         {
-          "name": "PedirTemporada7Intent",
+          "name": "PedirSetimaTemporadaIntent",
           "slots": [
             {
               "name": "titulo",
@@ -353,7 +353,7 @@
           ]
         },
         {
-          "name": "PedirTemporada8Intent",
+          "name": "PedirOitavaTemporadaIntent",
           "slots": [
             {
               "name": "titulo",
@@ -385,7 +385,7 @@
           ]
         },
         {
-          "name": "PedirTemporada9Intent",
+          "name": "PedirNonaTemporadaIntent",
           "slots": [
             {
               "name": "titulo",
@@ -417,7 +417,7 @@
           ]
         },
         {
-          "name": "PedirTemporada10Intent",
+          "name": "PedirDecimaTemporadaIntent",
           "slots": [
             {
               "name": "titulo",
