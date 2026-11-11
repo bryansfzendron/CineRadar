@@ -5,7 +5,12 @@
       "intents": [
         {
           "name": "PedirFilmeIntent",
-          "slots": [{ "name": "titulo", "type": "AMAZON.SearchQuery" }],
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
           "samples": [
             "o filme {titulo}",
             "pede o filme {titulo}",
@@ -15,13 +20,17 @@
             "quero ver o filme {titulo}",
             "baixa o filme {titulo}",
             "baixar o filme {titulo}",
-            "adiciona o filme {titulo}",
-            "coloca o filme {titulo}"
+            "adiciona o filme {titulo}"
           ]
         },
         {
           "name": "PedirSerieIntent",
-          "slots": [{ "name": "titulo", "type": "AMAZON.SearchQuery" }],
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
           "samples": [
             "a série {titulo}",
             "pede a série {titulo}",
@@ -31,13 +40,17 @@
             "quero ver a série {titulo}",
             "baixa a série {titulo}",
             "baixar a série {titulo}",
-            "adiciona a série {titulo}",
-            "coloca a série {titulo}"
+            "adiciona a série {titulo}"
           ]
         },
         {
           "name": "PedirIntent",
-          "slots": [{ "name": "titulo", "type": "AMAZON.SearchQuery" }],
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
           "samples": [
             "pede {titulo}",
             "pedir {titulo}",
@@ -52,7 +65,12 @@
         },
         {
           "name": "StatusPedidoIntent",
-          "slots": [{ "name": "titulo", "type": "AMAZON.SearchQuery" }],
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
           "samples": [
             "como está o pedido de {titulo}",
             "como está o pedido do {titulo}",
@@ -92,15 +110,347 @@
             "tem coisa nova"
           ]
         },
-        { "name": "AMAZON.YesIntent", "samples": [] },
-        { "name": "AMAZON.NoIntent", "samples": [] },
-        { "name": "AMAZON.HelpIntent", "samples": [] },
-        { "name": "AMAZON.CancelIntent", "samples": [] },
-        { "name": "AMAZON.StopIntent", "samples": [] },
-        { "name": "AMAZON.NavigateHomeIntent", "samples": [] },
-        { "name": "AMAZON.FallbackIntent", "samples": [] }
+        {
+          "name": "PedirTemporadaIntent",
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "a temporada {titulo}",
+            "pede a temporada {titulo}",
+            "pedir a temporada {titulo}",
+            "peça a temporada {titulo}",
+            "quero a temporada {titulo}",
+            "baixa a temporada {titulo}",
+            "baixar a temporada {titulo}"
+          ]
+        },
+        {
+          "name": "AprovarIntent",
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "aprova {titulo}",
+            "aprovar {titulo}",
+            "aprova a versão de {titulo}",
+            "pode baixar {titulo}",
+            "manda baixar {titulo}",
+            "libera {titulo}",
+            "aprova o download de {titulo}",
+            "aprova",
+            "aprovar",
+            "aprova o que está esperando",
+            "o que está esperando aprovação"
+          ]
+        },
+        {
+          "name": "TirarIntent",
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "tira {titulo} da lista",
+            "tirar {titulo} da lista",
+            "remove {titulo}",
+            "remover {titulo}",
+            "remove {titulo} da lista",
+            "apaga {titulo} da lista",
+            "exclui {titulo} da lista",
+            "cancela o pedido de {titulo}",
+            "cancelar o pedido de {titulo}",
+            "desiste de {titulo}"
+          ]
+        },
+        {
+          "name": "SobreIntent",
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "do que se trata {titulo}",
+            "sobre o que é {titulo}",
+            "me fala sobre {titulo}",
+            "fala sobre {titulo}",
+            "me conta sobre {titulo}",
+            "qual a sinopse de {titulo}",
+            "qual a história de {titulo}",
+            "qual a nota de {titulo}",
+            "o que é {titulo}",
+            "é bom {titulo}"
+          ]
+        },
+        {
+          "name": "SugestoesIntent",
+          "slots": [
+            {
+              "name": "lista",
+              "type": "LISTA_SUGESTAO"
+            },
+            {
+              "name": "tipo",
+              "type": "TIPO_TITULO"
+            }
+          ],
+          "samples": [
+            "o que está {lista}",
+            "o que tá {lista}",
+            "quais {tipo} estão {lista}",
+            "quais os {tipo} {lista}",
+            "quais {tipo} {lista}",
+            "o que tem {lista}",
+            "o que vai estrear",
+            "quais {tipo} vão estrear",
+            "sugestões",
+            "sugestões de {tipo}",
+            "me sugere {tipo}",
+            "me sugere alguma coisa",
+            "me dá uma sugestão",
+            "me indica um {tipo}",
+            "me indica uma {tipo}",
+            "me indica {tipo}",
+            "o que assistir",
+            "o que eu posso assistir",
+            "o que tem de bom",
+            "{tipo} {lista}"
+          ]
+        },
+        {
+          "name": "EscolherIntent",
+          "slots": [
+            {
+              "name": "numero",
+              "type": "AMAZON.NUMBER"
+            },
+            {
+              "name": "ordinal",
+              "type": "ORDINAL"
+            }
+          ],
+          "samples": [
+            "{numero}",
+            "o {numero}",
+            "a {numero}",
+            "número {numero}",
+            "o número {numero}",
+            "quero o {numero}",
+            "pede o {numero}",
+            "{ordinal}",
+            "o {ordinal}",
+            "a {ordinal}",
+            "quero o {ordinal}",
+            "quero a {ordinal}",
+            "pede o {ordinal}",
+            "pede a {ordinal}"
+          ]
+        },
+        {
+          "name": "TocarIntent",
+          "slots": [
+            {
+              "name": "titulo",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "coloca {titulo} na tv",
+            "coloca {titulo} na televisão",
+            "bota {titulo} na tv",
+            "põe {titulo} na tv",
+            "coloca {titulo} pra tocar",
+            "coloca pra tocar {titulo}",
+            "toca {titulo}",
+            "tocar {titulo}",
+            "assistir {titulo}",
+            "quero assistir {titulo}",
+            "passa {titulo}",
+            "passa {titulo} na tv"
+          ]
+        },
+        {
+          "name": "AMAZON.YesIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NoIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        }
       ],
-      "types": []
+      "types": [
+        {
+          "name": "LISTA_SUGESTAO",
+          "values": [
+            {
+              "id": "trending",
+              "name": {
+                "value": "em alta",
+                "synonyms": [
+                  "bombando",
+                  "fazendo sucesso",
+                  "do momento",
+                  "em destaque",
+                  "em alta essa semana"
+                ]
+              }
+            },
+            {
+              "id": "now_playing",
+              "name": {
+                "value": "no cinema",
+                "synonyms": [
+                  "nos cinemas",
+                  "em cartaz",
+                  "passando no cinema",
+                  "passando nos cinemas"
+                ]
+              }
+            },
+            {
+              "id": "popular",
+              "name": {
+                "value": "populares",
+                "synonyms": [
+                  "mais populares",
+                  "mais vistos",
+                  "famosos"
+                ]
+              }
+            },
+            {
+              "id": "upcoming",
+              "name": {
+                "value": "estreando",
+                "synonyms": [
+                  "vai estrear",
+                  "vão estrear",
+                  "estreias",
+                  "lançamentos",
+                  "próximos lançamentos",
+                  "chegando no cinema"
+                ]
+              }
+            },
+            {
+              "id": "on_the_air",
+              "name": {
+                "value": "no ar",
+                "synonyms": [
+                  "passando agora",
+                  "passando na tv",
+                  "em exibição"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TIPO_TITULO",
+          "values": [
+            {
+              "id": "movie",
+              "name": {
+                "value": "filmes",
+                "synonyms": [
+                  "filme"
+                ]
+              }
+            },
+            {
+              "id": "series",
+              "name": {
+                "value": "séries",
+                "synonyms": [
+                  "série",
+                  "seriados",
+                  "seriado"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "ORDINAL",
+          "values": [
+            {
+              "id": "1",
+              "name": {
+                "value": "primeiro",
+                "synonyms": [
+                  "primeira"
+                ]
+              }
+            },
+            {
+              "id": "2",
+              "name": {
+                "value": "segundo",
+                "synonyms": [
+                  "segunda"
+                ]
+              }
+            },
+            {
+              "id": "3",
+              "name": {
+                "value": "terceiro",
+                "synonyms": [
+                  "terceira"
+                ]
+              }
+            },
+            {
+              "id": "4",
+              "name": {
+                "value": "quarto",
+                "synonyms": [
+                  "quarta"
+                ]
+              }
+            },
+            {
+              "id": "5",
+              "name": {
+                "value": "quinto",
+                "synonyms": [
+                  "quinta"
+                ]
+              }
+            }
+          ]
+        }
+      ]
     }
   }
 }

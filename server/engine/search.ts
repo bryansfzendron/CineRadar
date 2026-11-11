@@ -138,7 +138,7 @@ export async function searchItem(svc: Services, item: StoredItem): Promise<Searc
       if (item.kind === 'movie') {
         raw.push(...(await arr.searchReleases(arrId)).map((r) => fromArr(r, 'radarr')));
       } else {
-        const seasons = item.seasons.length ? item.seasons : [1];
+        const seasons = wantedSeasons(item);
         for (const season of seasons) {
           const list = await arr.searchReleases(arrId, season).catch((err) => {
             errors.push(`${arr.service} T${season}: ${errorMessage(err)}`);
@@ -212,7 +212,7 @@ export async function searchItem(svc: Services, item: StoredItem): Promise<Searc
           kind: item.kind,
           titles: [...new Set([item.title, item.originalTitle, ...item.altTitles])].filter(Boolean),
           year: item.year,
-          seasons: item.seasons,
+          seasons: wantedSeasons(item),
           imdbId: item.imdbId,
         });
         for (const r of list) {
@@ -242,7 +242,22 @@ export async function searchItem(svc: Services, item: StoredItem): Promise<Searc
   }
   await pool(tasks, 2);
 
-  return { releases: rank(item, raw, settings.autoRule), errors: [...new Set(errors)], sources };
+  return { releases: keepWantedSeasons(rank(item, raw, settings.autoRule), item.onlySeasons), errors: [...new Set(errors)], sources };
+}
+
+/** As temporadas a procurar: as pedidas, senão todas (e a 1 quando o TMDB não diz quantas há). */
+export function wantedSeasons(item: Pick<StoredItem, 'seasons' | 'onlySeasons'>): number[] {
+  if (item.onlySeasons?.length) return item.onlySeasons;
+  return item.seasons.length ? item.seasons : [1];
+}
+
+/**
+ * Com temporadas pedidas, fica só o que é delas. O pacote da série inteira (sem temporada) sai também:
+ * baixaria todas. Exportado para teste.
+ */
+export function keepWantedSeasons<T extends { season: number | null }>(releases: T[], only: number[] | null): T[] {
+  if (!only?.length) return releases;
+  return releases.filter((r) => r.season != null && only.includes(r.season));
 }
 
 /** Garante o filme/série no Radarr/Sonarr e guarda o id. */

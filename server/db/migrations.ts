@@ -94,4 +94,6 @@ export const MIGRATIONS: string[] = [
   );
   CREATE INDEX events_item ON events(item_id, id DESC);
   `,
+  // 2: temporadas pedidas (Alexa: "pede a temporada 3 de The Bear"). NULL = todas.
+  `ALTER TABLE items ADD COLUMN only_seasons TEXT;`,
 ];

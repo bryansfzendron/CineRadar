@@ -14,7 +14,9 @@ import { registerAlexa } from './alexa/route.ts';
 import { Auth, SESSION_COOKIE } from './auth.ts';
 import { dispatchRelease } from './engine/dispatch.ts';
 import { OwnedLibrary } from './engine/library.ts';
-import { NoMetadataError, requestTitle } from './engine/request.ts';
+import { approveReleases, pickForApproval } from './engine/approve.ts';
+import { playOnTv } from './engine/play.ts';
+import { NoMetadataError, requestTitle, SeasonNotFoundError } from './engine/request.ts';
 import { refreshLibraries, syncAvailability } from './engine/sync.ts';
 import { errorMessage } from './integrations/http.ts';
 import { SITES } from './integrations/sites/index.ts';
@@ -350,7 +352,25 @@ export async function buildApp(svc: Services, scheduler: Scheduler, auth: Auth) 
         if (!svc.meta.configured) throw new NoMetadataError();
         return withInList(await svc.meta.search(q, kind));
       },
-      request: async (kind, tmdbId) => ({ created: (await requestTitle(svc, scheduler, kind, tmdbId)).created }),
+      suggestions: async (which, kind) => (svc.meta.hasLists ? withInList(await svc.tmdb.list(kind, which)) : []),
+      request: async (kind, tmdbId, season) => {
+        try {
+          return { outcome: (await requestTitle(svc, scheduler, kind, tmdbId, season)).outcome };
+        } catch (err) {
+          if (err instanceof SeasonNotFoundError) return { outcome: 'no-such-season', seasons: err.available };
+          throw err;
+        }
+      },
+      approvalPlan: (itemId) => {
+        const item = svc.store.getItem(itemId);
+        return item ? pickForApproval(item, svc.store.releases(itemId)) : [];
+      },
+      approve: async (itemId, releaseIds) => {
+        const item = svc.store.getItem(itemId);
+        if (!item) return { sent: 0, errors: ['o pedido não existe mais'] };
+        return approveReleases(svc, item, releaseIds);
+      },
+      play: (kind, tmdbId, device) => playOnTv(svc, owned, kind, tmdbId, device),
     });
   }
 

@@ -1,4 +1,4 @@
-// POST /alexa: a Amazon chama aqui (pelo túnel da Cloudflare) a cada fala da skill "cine radar".
+// POST /alexa: a Amazon chama aqui (pelo túnel da Cloudflare) a cada fala da skill "meu cinema".
 //
 // Fica fora de /api de propósito: não tem login nem cookie, e o gancho de segurança do app só olha /api.
 // A proteção é a assinatura da Amazon, conferida sobre o corpo CRU — por isso esta rota tem o seu
@@ -8,16 +8,13 @@ import type { FastifyInstance } from 'fastify';
 import type { Kind } from '../../shared/types.ts';
 import { errorMessage } from '../integrations/http.ts';
 import type { Services } from '../services.ts';
-import { type Candidate, handle, type SkillDeps, speak } from './skill.ts';
+import { handle, type SkillDeps, speak } from './skill.ts';
 import { type AlexaRequestEnvelope, CertCache, rejectReason } from './verify.ts';
 
 const ARRIVED_DAYS = 7;
 
-export interface AlexaRouteDeps {
-  svc: Services;
-  search(query: string, kind?: Kind): Promise<Candidate[]>;
-  request(kind: Kind, tmdbId: number): Promise<{ created: boolean }>;
-}
+/** O que vem de fora de `svc` (busca com "na lista/na biblioteca", pedir, tocar) — montado pelo app. */
+export type AlexaRouteDeps = { svc: Services } & Pick<SkillDeps, 'search' | 'suggestions' | 'request' | 'approvalPlan' | 'approve' | 'play'>;
 
 export async function registerAlexa(app: FastifyInstance, deps: AlexaRouteDeps): Promise<void> {
   const { svc } = deps;
@@ -25,8 +22,21 @@ export async function registerAlexa(app: FastifyInstance, deps: AlexaRouteDeps):
 
   const skillDeps: SkillDeps = {
     search: deps.search,
+    suggestions: deps.suggestions,
     request: deps.request,
+    approvalPlan: deps.approvalPlan,
+    approve: deps.approve,
+    play: deps.play,
+    details: async (kind: Kind, tmdbId: number) => {
+      const d = await svc.meta.details(kind, tmdbId);
+      return { genres: d.genres, runtime: d.runtime, rating: d.rating, seasons: d.seasons, overview: d.overview };
+    },
     items: () => svc.store.listItems(),
+    remove: (id) => {
+      const item = svc.store.getItem(id);
+      svc.store.deleteItem(id);
+      if (item) svc.log.info(`[alexa] tirado da lista: ${item.title}`);
+    },
     arrived: () => {
       const since = Date.now() - ARRIVED_DAYS * 86_400_000;
       return svc.store

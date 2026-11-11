@@ -21,6 +21,7 @@ interface ItemRow {
   runtime: number | null;
   rating: number | null;
   seasons: string;
+  only_seasons: string | null;
   cast_json: string;
   status: ItemStatus;
   status_detail: string | null;
@@ -104,6 +105,8 @@ export interface NewRelease {
 /** Interno do servidor: item com os campos que a interface não vê. */
 export interface StoredItem extends Item {
   altTitles: string[];
+  /** Só estas temporadas foram pedidas; null = a série inteira. */
+  onlySeasons: number[] | null;
   downloadHash: string | null;
   plexKey: string | null;
   jellyfinId: string | null;
@@ -145,6 +148,7 @@ function toItem(r: ItemRow): StoredItem {
     runtime: r.runtime,
     rating: r.rating,
     seasons: JSON.parse(r.seasons),
+    onlySeasons: r.only_seasons ? (JSON.parse(r.only_seasons) as number[]) : null,
     cast: JSON.parse(r.cast_json),
     status: r.status,
     statusDetail: r.status_detail,
@@ -166,7 +170,7 @@ function toItem(r: ItemRow): StoredItem {
 }
 
 export function publicItem(i: StoredItem): Item {
-  const { altTitles: _a, downloadHash: _d, plexKey: _p, jellyfinId: _j, ...rest } = i;
+  const { altTitles: _a, onlySeasons: _o, downloadHash: _d, plexKey: _p, jellyfinId: _j, ...rest } = i;
   return rest;
 }
 
@@ -271,6 +275,12 @@ export class Store {
     const id = Number(res.lastInsertRowid);
     this.event(id, 'info', 'Adicionado à lista de desejos');
     return this.getItem(id)!;
+  }
+
+  /** Restringe a série às temporadas dadas (null volta a ser a série inteira). */
+  setOnlySeasons(id: number, seasons: number[] | null): void {
+    const list = seasons ? [...new Set(seasons)].sort((a, b) => a - b) : null;
+    this.db.prepare('UPDATE items SET only_seasons = ? WHERE id = ?').run(list ? JSON.stringify(list) : null, id);
   }
 
   deleteItem(id: number): void {

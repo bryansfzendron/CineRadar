@@ -69,4 +69,37 @@ export class Jellyfin {
   async refresh(): Promise<void> {
     await this.req('/Library/Refresh', { method: 'POST' });
   }
+
+  // ---------- tocar numa TV (Alexa: "coloca Duna na TV") ----------
+
+  /** Apps do Jellyfin abertos agora que aceitam controle remoto, do mais recente para o mais antigo. */
+  async sessions(): Promise<JellyfinSession[]> {
+    const list = await this.req<
+      { Id: string; DeviceName?: string; Client?: string; UserId?: string; SupportsRemoteControl?: boolean; LastActivityDate?: string }[]
+    >('/Sessions');
+    return list
+      .filter((s) => s.SupportsRemoteControl)
+      .map((s) => ({ id: s.Id, deviceName: s.DeviceName ?? s.Client ?? 'Jellyfin', userId: s.UserId ?? null, lastActivity: s.LastActivityDate ?? '' }))
+      .sort((a, b) => b.lastActivity.localeCompare(a.lastActivity));
+  }
+
+  /** O episódio para continuar a série, do ponto de vista do usuário daquela sessão. */
+  async nextEpisode(seriesId: string, userId: string | null): Promise<string | null> {
+    const user: Record<string, string> = userId ? { UserId: userId } : {};
+    const next = await this.req<{ Items: { Id: string }[] }>('/Shows/NextUp', { query: { SeriesId: seriesId, Limit: '1', ...user } }).catch(() => null);
+    if (next?.Items[0]) return next.Items[0].Id;
+    const all = await this.req<{ Items: { Id: string }[] }>(`/Shows/${encodeURIComponent(seriesId)}/Episodes`, { query: { Limit: '1', ...user } });
+    return all.Items[0]?.Id ?? null;
+  }
+
+  async play(sessionId: string, itemId: string): Promise<void> {
+    await this.req(`/Sessions/${encodeURIComponent(sessionId)}/Playing`, { method: 'POST', query: { PlayCommand: 'PlayNow', ItemIds: itemId } });
+  }
+}
+
+export interface JellyfinSession {
+  id: string;
+  deviceName: string;
+  userId: string | null;
+  lastActivity: string;
 }
